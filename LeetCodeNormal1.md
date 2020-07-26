@@ -325,7 +325,7 @@ class Solution(object):
 ### Tips
 
 * 一直往左走，顺序入栈，左到底，出个栈，往右走，再左到底
-* [二叉树的所有遍历](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/solution/python3-er-cha-shu-suo-you-bian-li-mo-ban-ji-zhi-s/)
+* [二叉树的所有遍历](https://leetcodebianli-cn.com/problems/binary-tree-inorder-traversal/solution/python3-er-cha-shu-suo-you-bian-li-mo-ban-ji-zhi-s/)
 
 
 
