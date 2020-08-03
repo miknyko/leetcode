@@ -403,6 +403,8 @@ def productExceptSelf(nums):
 
 ### Tips
 
+* 注意两个循环的起始和终止索引
+
 * 使用乘积矩阵，分别计算上三角，下三角，额外空间为**O(1)**
 * 时间为**O(n)**
 
@@ -428,7 +430,6 @@ class Solution(object):
 
         for i in range(length - 1):
             for j in range(i + 1, length):
-                print((i,j))
                 matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
 
         # 再进行水平镜像
