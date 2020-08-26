@@ -404,7 +404,7 @@ class Solution(object):
                     bottom = stack.pop(-1)
                     if not stack:
                         break
-                    # 注意高度
+                    # 注意高度，宽度
                     w = i - stack[-1] - 1
                     h = min(height[stack[-1]], height[i]) - height[bottom]
                     sums += w * h
@@ -685,3 +685,400 @@ class MedianFinder(object):
 
 * 构建一个大顶堆和一个小顶堆
 * 添加一个数的时候，注意两个堆之间的平衡
+
+
+
+## 329.矩阵中的最长递增路径
+
+![329.矩阵中的最长递增路径](.\images\329.PNG)
+
+```python
+class Solution(object):
+    def longestIncreasingPath(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: int
+        """
+        if not matrix:
+            return 0
+
+        h = len(matrix)
+        w = len(matrix[0])
+        
+        directions = [(1, 0),(-1, 0),(0, 1),(0, -1)]
+        record = [[0 for _ in range(w)] for _ in range(h)]
+
+        def dfs(i, j):
+            if record[i][j] != 0:
+                return record[i][j]
+
+            record [i][j] = 1
+            
+            for dx, dy in directions:
+                new_i = i + dy
+                new_j = j + dx
+                if 0 <= new_i < h and 0 <= new_j < w and matrix[new_i][new_j] > matrix[i][j]:
+                    record[i][j] = max(record[i][j], dfs(new_i, new_j) + 1)
+                                  
+            return record[i][j]
+        
+        res = 0
+        for i in range(h):
+            for j in range(w):
+                res = max(res, dfs(i, j))
+        
+        return res
+```
+
+### Tips
+
+* 带记忆的深度搜索
+
+
+
+## 218.天际线问题
+
+![218.天际线问题](.\images\218.PNG)
+
+
+
+```python
+class Solution(object):
+    def getSkyline(self, buildings):
+        """
+        :type buildings: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        class recorder():
+            def __init__(self):
+                self.data = collections.defaultdict(int)
+                self.max_height = 0
+                self.data[0] = 1
+
+            def insert(self, num):
+                self.data[num] += 1
+                if num > self.max_height:
+                    self.max_height = num
+            
+            def pop(self, num):
+                self.data[num] -= 1
+                if self.data[num] == 0:
+                    del self.data[num]
+                    self.max_height = max(self.data.keys())
+
+
+
+        points = []
+        # 将所有左右端点按x坐标顺序排序
+        for l, r, h in buildings:
+            points.append((l, -h))
+            points.append((r, h))
+        points.sort()
+
+        current_heights = recorder()
+        last = 0
+        res = []
+
+        for x, h in points:
+            if h < 0:
+                current_heights.insert(-h)
+            else:
+                current_heights.pop(h)
+            
+            cur_height = current_heights.max_height
+            if cur_height != last:
+                res.append([x, cur_height])
+                last = cur_height
+            print(current_heights.max_height)
+            
+        return res
+```
+
+### Tips:
+
+* 线性扫描所有的关键点，动态记录高度发生变化的临界时刻
+* 使用哈希表来记录动态高度，如果使用大顶堆，删除某值的时候可能超时
+
+
+
+## 124.二叉树中的最大路径和
+
+![124.二叉树中的最大路径和](.\images\124.PNG)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def maxPathSum(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        
+        self.res = float('-inf')
+
+        def maxSum(node):
+            if not node:
+                return 0
+            # 信息汇总
+            left = max(maxSum(node.left), 0)
+            right = max(maxSum(node.right), 0)
+
+            self.res = max(self.res, node.val + left + right)
+            # 要么走左边，要么走右边，要么不走
+            return max(left + node.val, right + node.val)
+
+        maxSum(root)
+        return self.res
+```
+
+
+
+### Tips
+
+* 不要把路径想象为从某节点到某节点，把路径想象为从某个根节点长出的两个分支
+* 从这个根节点出发的两个分支，遇到一个新节点，要么止步于该节点，要么继续走左边，要么继续走右边
+* 那么如何选择走左边走右边或者不走？则需要递归的从底而上将信息汇总
+
+
+
+## 212.单词搜索II
+
+![212.单词搜索II](.\images\212.PNG)
+
+```python
+class Solution(object):
+    def findWords(self, board, words):
+        """
+        :type board: List[List[str]]
+        :type words: List[str]
+        :rtype: List[str]
+        """
+        # 实现一个Trie
+        class Trie():
+            def __init__(self):
+                self.data = {}
+
+            def insert(self, word):
+                word = word + '#'
+                
+                if word[0] == '#':
+                    self.data['#'] = True
+                    return 
+
+                elif word[0] not in self.data:
+                    self.data[word[0]] = Trie()
+                self.data[word[0]].insert(word[1:])
+
+            def search(self, word):
+                word = word + '#'
+                if word[0] == '#' and self.data['#'] == True:
+                    return True
+                elif word[0] in self.data:
+                    return self.data[word[0]].search(word[1:])
+                else:
+                    return False
+
+            def startwith(self, c):
+                if not c:
+                    return True
+                
+                if c[0] in self.data:
+                    return self.data[c[0]].startwith(c[1:])
+
+                else:
+                    return False
+
+        record = Trie()
+        for word in words:
+            record.insert(word)
+
+        res = []
+        directions = [(1, 0),(-1, 0),(0, 1),(0, -1)]
+        visited = [[0 for _ in range(len(board[0]))] for _ in range(len(board))]
+
+        def dfs(i, j, record, path):
+            if board[i][j] not in record.data:
+                return 
+            record = record.data[board[i][j]]
+            path += board[i][j]
+            if '#' in record.data:
+                res.append(path[:])
+            visited[i][j] = 1
+            for dx, dy in directions:
+                new_i = i + dy
+                new_j = j + dx
+                if 0 <= new_i < len(board) and 0 <= new_j < len(board[0]) and visited[new_i][new_j] == 0:
+                    dfs(new_i, new_j, record, path)
+            path = path[:-1] # 这个回溯可加可不加，因为每次从新的元素出发，path都进行了重置
+            visited[i][j] = 0 # 这个回溯必须加
+            return
+                      
+ 
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                dfs(i, j, record, "")
+
+        return list(set(res))
+```
+
+### Tips
+
+* 回溯的写法，真的好难，主要掌握回溯的时机，一定在深度搜索的主逻辑中回溯
+* Trie的实现
+
+
+
+## 84.柱状图中的最大矩形
+
+![84.柱状图中的最大矩形](.\images\84.PNG)
+
+```python
+class Solution(object):
+    def largestRectangleArea(self, heights):
+        """
+        :type heights: List[int]
+        :rtype: int
+        """
+		# 注意首尾加0
+        heights = [0] + heights + [0]
+        # 单调递增栈
+        stack = [0]
+        n = len(heights)
+
+        max_vol = 0
+        for i in range(n):
+            # 遇到比栈顶元素小的，就开始出栈进行结算
+            while heights[stack[-1]] > heights[i]:
+                h_index = stack.pop(-1)
+                max_vol = max(max_vol, heights[h_index] * (i - stack[-1] - 1))
+            stack.append(i)
+        
+        return max_vol
+```
+
+### Tips
+
+* 使用单调递增栈
+* 和接雨水一样，只不过一个用递减栈，这个用递增栈
+
+
+
+## 315.计算右侧小于当前元素的个数
+
+![315.计算右侧小于当前元素的个数](.\images\315.PNG)
+
+```python
+class Solution(object):
+    def countSmaller(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        class Node():
+            def __init__(self, val):
+                self.val = val
+                self.left = None
+                self.right = None
+                # 这个是关键，记录目前该节点的左孩子的数目，也就是比自己小的节点数目
+                self.left_count = 0
+
+        class BST():
+            def __init__(self, dataset):
+                self.root = None
+                self.dataset = dataset
+        
+            def push(self, index):
+                count = 0
+                if not self.root:
+                    self.root = Node(index)
+                    return count
+                p = self.root
+                while p:
+                    if self.dataset[index] > self.dataset[p.val]:
+                        count = count + p.left_count + 1
+                        if p.right:
+                            p = p.right
+                        else:
+                            p.right = Node(index)
+                            return count
+                    else:
+                        p.left_count += 1
+                        if p.left:
+                            p = p.left
+                        else:
+                            p.left = Node(index)
+                            return count
+        
+        bst = BST(nums)
+        res = [0 for _ in range(len(nums))]
+        for i in range(len(nums))[::-1]:
+            count = bst.push(i)     
+            res[i] = count
+        return res
+```
+
+### Tips
+
+* 从右往左遍历数组，将数组元素插入二叉搜索树
+* 每个节点增加一个属性，记录此节点左孩子的节点个数
+* 当一个遍历到一个新值的时候，这个值在插入过程中，只要往右走，就不断记录所经历的节点的左孩子数，只要往左走，就更新这个岔路口节点的左孩子数，在插入完毕的时候，返回统计的值，就是这颗树里，小于这个数的数的个数
+
+```python
+class Solution(object):
+    def countSmaller(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        count = [0 for _ in range(len(nums))]
+        index = [i for i in range(len(nums))]
+
+        def mergeSort(nums):
+            if len(nums) <= 1:
+                return nums
+            mid = len(nums) // 2
+            left = mergeSort(nums[:mid])
+            right = mergeSort(nums[mid:])
+            return merge(left, right)
+
+        def merge(left, right):
+            res = []
+            i = 0 
+            j = 0
+
+            while i < len(left) and j < len(right):
+                if nums[left[i]] <= nums[right[j]]:
+                    res.append(left[i])
+                    count[left[i]] += j
+                    i += 1
+                else:
+                    res.append(right[j])
+                    j += 1
+
+            if i == len(left):
+                res += right[j:]
+            
+            if j == len(right):
+                while i < len(left):
+                    res.append(left[i])
+                    count[left[i]] += j
+                    i += 1
+
+            return res
+
+        mergeSort(index)
+
+        return count
+```
+
+### Tips
+
+* 计算逆序对，归并排序的副产物
+* 初始化一个索引数组，排序的时候排的是索引数组，而不是原数组
+* 这样可以通过索引数组，方便的映射结果数组，在结果数组的指定索引位置计数
