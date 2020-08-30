@@ -1,52 +1,51 @@
 
-def countSmaller(nums):
+def findMedianSortedArrays(nums1, nums2):
     """
-    :type nums: List[int]
-    :rtype: List[int]
+    :type nums1: List[int]
+    :type nums2: List[int]
+    :rtype: float
     """
-    class Node():
-        def __init__(self, val):
-            self.val = val
-            self.left = None
-            self.right = None
-            # 这个是关键，记录目前该节点的左孩子的数目，也就是比自己小的节点数目
-            self.left_count = 0
+    if len(nums1) > len(nums2):
+        return findMedianSortedArrays(nums2, nums1)
 
-    class BST():
-        def __init__(self, dataset):
-            self.root = None
-            self.dataset = dataset
+    nums1 = [float('-inf')] + nums1 + [float('inf')]
+    nums2 = [float('-inf')] + nums2 + [float('inf')]
+    m = len(nums1)
+    n = len(nums2)
+
+    # print(nums1)
+    # print(nums2)
+
+    left = 1
+    right = m - 2
+
+    while left <= right:
+        mid = left + (right - left) // 2
+        i = mid
+        j = (m + n + 1) // 2 - i
+
+        # 满足条件
+        if max(nums1[i - 1], nums2[j - 1]) <= min(nums1[i], nums2[j]):
+            # print((i, j))
+            left_max = max(nums1[i - 1], nums2[j - 1])
+            right_min = min(num1[i], nums2[j])
+            print(left_max)
+            print(right_min)
+            if (m + n) // 2 == 0:
+                return float(left_max + right_min) / 2.0
+            else:
+                return left_max
+
+        # 若mid大了
+        elif nums1[i] > nums2[j]:
+            right = mid - 1
+        # 若mid小了
+        elif nums2[j - 1] > nums1[i]:
+            left = mid + 1
+
     
-        def push(self, index):
-            count = 0
-            if not self.root:
-                self.root = Node(index)
-                return count
-            p = self.root
-            while p:
-                if self.dataset[index] > self.dataset[p.val]:
-                    count = count + p.left_count + 1
-                    if p.right:
-                        p = p.right
-                    else:
-                        p.right = Node(index)
-                        # p.right.left_count = p.left_count + 1
-                        return count
-                else:
-                    p.left_count += 1
-                    if p.left:
-                        p = p.left
-                    else:
-                        p.left = Node(index)
-                        return count
-        
-    bst = BST(nums)
-    res = [0 for _ in range(len(nums))]
-    for i in range(len(nums))[::-1]:
-        count = bst.push(i)     
-        res[i] = count
-    return res
-
-test = [5, 2, 6, 1]
-
-print(countSmaller(test))
+                
+res = findMedianSortedArrays([2],[1,3])           
+print(res)
+test = [float('-inf'), 2]
+# print(min(test))
