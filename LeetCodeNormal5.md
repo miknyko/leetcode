@@ -606,6 +606,7 @@ class Solution(object):
                 self.queue = []
 
             def push(self, i):
+                # 新元素之前加入队列的较小元素，将永无出头之日，所以不用记录
                 while self.queue and nums[i] > nums[self.queue[-1]]:
                     self.queue.pop(-1)
                 self.queue.append(i)
@@ -732,7 +733,9 @@ class Solution(object):
 
 ### Tips
 
-* 带记忆的深度搜索
+* 递归，带记忆的深度搜索
+* 其实有点像动态规划，使用一个二维dp，`dp[i][j]`为以`[i][j]`为最大值的递增序列的长度
+* 也可以用深度搜索做
 
 
 
@@ -828,9 +831,10 @@ class Solution(object):
             # 信息汇总
             left = max(maxSum(node.left), 0)
             right = max(maxSum(node.right), 0)
-
+			
+            # 有可能在递归过程中遇到惊喜，原来这个节点就是我们两边都可以走的节点，也就是根节点
             self.res = max(self.res, node.val + left + right)
-            # 要么走左边，要么走右边，要么不走
+            # 不然，到了一个节点要么走左边，要么走右边，要么不走
             return max(left + node.val, right + node.val)
 
         maxSum(root)
@@ -953,7 +957,8 @@ class Solution(object):
 
         max_vol = 0
         for i in range(n):
-            # 遇到比栈顶元素小的，就开始出栈进行结算
+            # 遇到比栈顶A元素小的新元素B，就开始出栈进行结算
+            # 结算，遍历以此B元素为右边界（不包含B！）的所有矩形，所以首尾一定要加0
             while heights[stack[-1]] > heights[i]:
                 h_index = stack.pop(-1)
                 max_vol = max(max_vol, heights[h_index] * (i - stack[-1] - 1))
