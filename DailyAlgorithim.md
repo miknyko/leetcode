@@ -425,3 +425,48 @@ class Solution(object):
 ### Tips
 
 * 主要注意搜索的时候， 不能再次搜索自身同层已经选择过的元素
+
+
+
+## 40.组合综合II
+
+![40.组合综合II](.\images\40.png)
+
+```python
+class Solution(object):
+    def combinationSum2(self, candidates, target):
+        """
+        :type candidates: List[int]
+        :type target: int
+        :rtype: List[List[int]]
+        """
+        res = []
+        candidates.sort()
+
+        def dfs(diff, path, start_index):
+            if diff == 0:
+                res.append(path[:])            
+                return
+            
+            if diff < candidates[0]:
+                return
+
+            for i in range(start_index, len(candidates)):
+                # 同一层不能选择相同的数
+                if candidates[i] in candidates[start_index:i]:
+                    continue
+                if diff >= candidates[i]:
+                    path.append(candidates[i])
+                    # 同一分支是可以选择相同的数的，只不过不能是他自己
+                    dfs(diff - candidates[i], path, i + 1)
+                    path.pop()
+
+        dfs(target, [], 0)
+        
+        return res
+```
+
+### Tips
+
+* 和39一起，全面搞懂搜索时的去重
+* 此题同一层不能用相同的重复数，同一分支是可以使用的，但是不能是他自己
