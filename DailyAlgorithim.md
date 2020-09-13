@@ -470,3 +470,85 @@ class Solution(object):
 
 * 和39一起，全面搞懂搜索时的去重
 * 此题同一层不能用相同的重复数，同一分支是可以使用的，但是不能是他自己
+
+
+
+## 216.组合总和III
+
+![216.组合总和III](.\images\216.png)
+
+```python
+class Solution(object):
+    def combinationSum3(self, k, n):
+        """
+        :type k: int
+        :type n: int
+        :rtype: List[List[int]]
+        """
+
+        res = []
+
+        
+        def dfs(diff, start, path):
+            if len(path) == k:
+                if diff == 0:
+                    res.append(path[:])
+                return 
+            
+            for i in range(start, 10):
+                path.append(i)
+                # 只能在后面的数里面选，不能再选前面的，因为要么已经被其他path选过，要么这个PATH里面已经用过
+                dfs(diff - i, i + 1, path)
+                path.pop(-1)
+            
+        dfs(n, 1, [])
+        return res
+
+```
+
+### Tips
+
+* 也是注意去重的问题
+
+
+
+## 637.二叉树的层平均值
+
+![637.二叉树的层平均值](.\images\637.png)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def averageOfLevels(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[float]
+        """
+
+        queue = [root]
+        res = []
+        while queue:
+            size = len(queue)
+            tmp = 0
+            for i in range(size):
+                node = queue.pop(0)
+                tmp += node.val
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            res.append(float(tmp) / float(size))
+
+        return res
+
+```
+
+### Tips
+
+* 层序遍历
