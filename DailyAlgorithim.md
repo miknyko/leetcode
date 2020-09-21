@@ -552,3 +552,215 @@ class Solution(object):
 ### Tips
 
 * 层序遍历
+
+
+
+## 37.解数独
+
+![37.解数独](.\images\37.png)
+
+```python
+class Solution(object):
+    def solveSudoku(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: None Do not return anything, modify board in-place instead.
+        """
+
+        row_rec = [[False for _ in range(9)] for _ in range(9)]
+        column_rec= [[False for _ in range(9)] for _ in range(9)]
+        box_rec = [[False for _ in range(9)] for _ in range(9)]
+
+        for i in range(9):
+            for j in range(9):
+                if board[i][j] != '.':
+                    digit = int(board[i][j])
+                    row_rec[i][digit - 1] = True
+                    column_rec[j][digit - 1] = True
+                    box_rec[(i // 3) * 3 + (j // 3)][digit - 1] = True
+        
+        def dfs(board, i, j):
+            if j == 9:
+                return dfs(board, i + 1, 0)
+            if i == 9:
+                return True 
+
+            if board[i][j] == '.':
+                for num in range(1, 10):
+                    if not row_rec[i][num - 1] and not column_rec[j][num - 1] and not box_rec[(i // 3) * 3 + (j // 3)][num - 1] :
+                        board[i][j] = str(num)
+                        row_rec[i][num - 1] = True
+                        column_rec[j][num - 1] = True
+                        box_rec[(i // 3) * 3 + (j // 3)][num - 1] = True
+                        if dfs(board, i, j + 1):
+                            return True
+                        row_rec[i][num - 1] = False
+                        column_rec[j][num - 1] = False
+                        box_rec[(i // 3) * 3 + (j // 3)][num - 1] = False
+                        board[i][j] = '.'
+            else:
+                return dfs(board, i, j + 1)
+            return False
+
+        
+        dfs(board, 0, 0)
+                        
+
+                        
+```
+
+### Tips
+
+* 回溯，但是这种回溯和我们以前的写法有点不一样，给递归函数添加一个布尔返回值判断是否继续往下搜索
+* 中间往后递归的时候，需要判断dfs(n + 1)的返回值
+
+
+
+## 226.翻转二叉树
+
+![226.翻转二叉树](.\images\226.png)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def invertTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: TreeNode
+        """
+
+        if not root:
+            return []
+
+        queue = [root]
+
+        while queue:
+            node = queue.pop()
+            tmp = node.left
+            node.left = node.right
+            node.right = tmp
+
+            if node.left:
+                queue.append(node.left)
+
+            if node.right:
+                queue.append(node.right)
+
+        return root
+```
+
+### Tips
+
+* BFS迭代
+* 也可以用递归
+
+
+
+## 47. 全排列II
+
+![47. 全排列II](.\images\47.png)
+
+```python
+class Solution(object):
+    def permuteUnique(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        nums.sort()
+
+        res = []
+        n = len(nums)
+        used = [0 for _ in range(n)]
+
+        def dfs(used, path):
+            if len(path) == n:
+                res.append(path[:])
+                return 
+
+            for i in range(n):
+                
+                if used[i] == 1:
+                    continue
+                # 当待选择的数字和排他前面的数字一样，并且他前面的这个数字此轮没有被选过
+                # 说明同一层的和他相同元素已经被选择过
+                if i > 0 and nums[i] == nums[i - 1] and used[i - 1] == 0:
+                    continue
+                path.append(nums[i])
+                used[i] = 1
+                dfs(used, path)
+                used[i] = 0
+                path.pop()
+
+        dfs(used, [])
+
+        return res
+```
+
+### TIPs
+
+* 同一分支可以选择相同的数
+* 同一层不能选择相同的数
+* 注意去重
+
+
+
+## 404.左叶子之和
+
+![404.左叶子之和](.\images\404.png)
+
+```python
+class Solution:
+    def sumOfLeftLeaves(self, root: TreeNode) -> int:
+        isLeafNode = lambda node: not node.left and not node.right
+
+        def dfs(node: TreeNode) -> int:
+            ans = 0
+            if node.left:
+                ans += node.left.val if isLeafNode(node.left) else dfs(node.left)
+            if node.right and not isLeafNode(node.right):
+                ans += dfs(node.right)
+            return ans
+        
+        return dfs(root) if root else 0
+
+```
+
+### Tips
+
+* 多种解法
+* 定义一个辅助函数判断节点是否是叶子很有用
+
+
+
+## 538.把二叉搜索树转换为累加树
+
+![538.把二叉搜索树转换为累加树](.\images\538.png)
+
+```python
+class Solution:
+    def convertBST(self, root: TreeNode) -> TreeNode:
+        cur = 0
+
+        def dfs(root):
+            nonlocal cur
+            if not root: return 
+            dfs(root.right)
+            cur += root.val
+            root.val = cur
+            dfs(root.left)
+
+        dfs(root)
+        return root
+```
+
+### Tips
+
+* 使用递归，反中序遍历BST
+* 使用一个全局变量total， 记录累加值

@@ -9,7 +9,10 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "stopOnEntry": true,
+            "pythonPath": "d:/miniconda/envs/pytorch/python.exe",
+            "cwd":""
         }
     ]
 }
