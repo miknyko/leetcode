@@ -764,3 +764,102 @@ class Solution:
 
 * 使用递归，反中序遍历BST
 * 使用一个全局变量total， 记录累加值
+
+
+
+## 968.监控二叉树
+
+![968.监控二叉树](.\images\968.png)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def minCameraCover(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        # 信号从底往上返回
+        # 每个节点根据子节点的信号，相应的往他的父节点返回对应的信号
+
+        # 0 没装，但是被检测到了
+        # 1 没装，也没被检测到
+        # 2 装了
+        self.result = 0
+
+        def dfs(root):
+            # 关于空节点返回值的设定，只要不要和其他的冲突就好
+            if not root:
+                return 0
+
+            left_state = dfs(root.left)
+            right_state = dfs(root.right)
+            # 信号从底往上返回
+            # 这种情况此节点必须装一个摄像头
+            if left_state == 1 or right_state == 1:
+                self.result += 1
+                return 2
+            # 这种情况此节点可以不装
+            if left_state == 2 or right_state == 2:
+                return 0
+            # 节点说“反正我没被检测到，我也不知道该不该装，爸爸你看着办吧”
+            else:
+                return 1
+        
+        if dfs(root) == 1:
+            self.result += 1
+
+        return self.result
+```
+
+### Tips
+
+* 这种深度搜索结果一定是最小的摄像头数量
+
+
+
+## 617.合并二叉树
+
+![617.合并二叉树](.\images\617.png)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def mergeTrees(self, t1, t2):
+        """
+        :type t1: TreeNode
+        :type t2: TreeNode
+        :rtype: TreeNode
+        """
+
+        if not t1 and not t2:
+            return None
+      
+        if t1 and t2:
+            node = TreeNode(t1.val + t2.val)
+            node.left = self.mergeTrees(t1.left, t2.left)
+            node.right = self.mergeTrees(t1.right, t2.right)
+            return node
+        
+        else:
+            node = t1 if t1 else t2
+            return node
+```
+
+### Tips
+
+* 递归
+* 注意只有两棵树的该节点都存在的时候， 才往下继续递归
+
