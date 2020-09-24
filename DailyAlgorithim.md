@@ -863,3 +863,67 @@ class Solution(object):
 * 递归
 * 注意只有两棵树的该节点都存在的时候， 才往下继续递归
 
+
+
+## 501.二叉搜索树中的众数
+
+![501.二叉搜索树中的众数](.\images\501.png)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         val = x
+#         left = None
+#         right = None
+
+class Solution(object):
+    def findMode(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if not root:
+            return []
+
+        max_count = 0
+        recent = float('-inf')
+        last = float('-inf')
+        count = 0
+        res = [root.val]
+
+        stack = []
+        p = root
+
+        while stack or p:
+            while p:
+                stack.append(p)
+                p = p.left
+            recent = stack.pop(-1)
+            if recent.val == last:
+                count += 1       
+            else:
+                count = 1
+            
+            if count == max_count:
+                res.append(recent.val)
+
+            if count > max_count:
+                res = []
+                max_count = count
+                res.append(recent.val)
+            
+            last = recent.val
+            p = recent.right
+          
+        return res
+        
+```
+
+### TIPs
+
+* 中序遍历后，BST的相同数一定邻近
+
+* 可以使用Morris遍历，省去中序遍历时的额外空间
+
+  
