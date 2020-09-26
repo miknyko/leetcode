@@ -18,24 +18,27 @@ class Solution(object):
         :rtype: List[List[int]]
         """
         res = []
-        path = []
-        def dfs(node, tar):
+
+        def dfs(node, target, path):
+
             if not node:
                 return 
-            
-            tar -= node.val
-            path.append(node.val)
 
-            if tar == 0 and not node.left and not node.right:
+            if not node.left and not node.right and target == node.val:
+                path.append(node.val)
                 res.append(path[:])
-                
-       
-            dfs(node.left, tar)
-            dfs(node.right, tar)
+                path.pop()
+                return
+
+            path.append(node.val)
+            dfs(node.left, target - node.val, path)
             path.pop()
 
-        dfs(root, sum)
+            path.append(node.val)
+            dfs(node.right, target - node.val, path)
+            path.pop()
 
+        dfs(root, sum, [])
         return res
 ```
 
