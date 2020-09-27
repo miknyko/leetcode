@@ -937,3 +937,53 @@ class Solution(object):
 ### Tips:
 
 * 没啥好说的，递归
+
+
+
+### 113.路径总和II
+
+![113.路径总和II](.\images\113.png)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def pathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: List[List[int]]
+        """
+        res = []
+
+        def dfs(node, target, path):
+
+            if not node:
+                return 
+
+            if not node.left and not node.right and target == node.val:
+                path.append(node.val)
+                res.append(path[:])
+                path.pop()
+                return
+
+            path.append(node.val)
+            dfs(node.left, target - node.val, path)
+            path.pop()
+
+            path.append(node.val)
+            dfs(node.right, target - node.val, path)
+            path.pop()
+
+        dfs(root, sum, [])
+        return res
+```
+
+### Tips
+
+* 注意返回时的处理
