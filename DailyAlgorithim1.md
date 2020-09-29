@@ -428,7 +428,7 @@ class Solution(object):
 
 
 
-## 40.组合综合II
+## 40.组合总和II
 
 ![40.组合综合II](.\images\40.png)
 
@@ -1072,3 +1072,45 @@ class Solution(object):
 ### Tips:
 
 * BFS层序遍历
+
+
+
+## 145.二叉树的后序遍历
+
+![145.二叉树的后序遍历](.\images\145.png)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def postorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if not root:
+            return None
+            
+        queue = [root]
+        res = []
+
+        while queue:
+            node = queue.pop(-1)
+            res.append(node.val)
+
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        return res[::-1]
+```
+
+### Tips:
+
+* 没有TIPS
+
