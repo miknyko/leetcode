@@ -548,7 +548,7 @@ class Solution(object):
             sums = val1 + val2 + carry
 
             carry = sums // 10
-            residual = sums % 10
+            residual = sums % 10	
 
             cur.next = ListNode(residual)
 
