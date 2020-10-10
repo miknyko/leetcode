@@ -163,3 +163,48 @@ class Solution(object):
   那么，剩下的问题就是解决root的距离和就可以了。
 
   我们一般想到DFS，根节点的距离和S = Σ s[i] + cnt[i];其中，s[i]为root的某子节点i到其子节点的距离和，cnt[i]为子节点i的大小
+
+
+
+
+
+## 142.环形链表II
+
+![142.环形链表II](.\images\142.png)
+
+```python
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution(object):
+    def detectCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+
+        fast = head
+        slow = head
+
+        while fast and slow and fast.next and slow.next and fast.next.next:
+            fast = fast.next.next
+            slow = slow.next
+
+            if fast == slow:
+                p = head
+                while p != slow:
+                    p = p.next
+                    slow = slow.next
+                return p
+
+        return None
+
+
+```
+
+### Tips:
+
+* 快慢指针，两指针相遇时派出第三个指针p，p和慢指针再次相遇的时候，就是循环点
