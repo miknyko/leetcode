@@ -385,62 +385,11 @@ class Solution(object):
 
         return res[::-1]
             
-=======
-## 416. 分割等和子集
 
-![416. 分割等和子集](.\images\416.png)
-
-
-
-​```python
-class Solution(object):
-    def canPartition(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: bool
-        """
-
-        if not nums or len(nums) == 1:
-            return False
-
-        n = len(nums)
-        total = sum(nums)
-
-        if total & 1 == 1:
-            return False
-
-        target = total / 2
-
-        dp = [[False for _ in range(target + 1)] for _ in range(n)]
-
-        if target >= nums[0]:
-            dp[0][nums[0]] = True
-        
-        for i in range(1, n):
-            for j in range(target + 1):
-                if dp[i - 1][j] or j == nums[i]:
-                    dp[i][j] = True
-
-                if j > nums[i] and dp[i - 1][j - nums[i]]:
-                    dp[i][j] = True
-
-        return dp[-1][-1]
 
         
 
-
-
->>>>>>> 4286f57a52d561799cd31071b63c8088e6bedcf0
 ```
 
-### Tips
 
-<<<<<<< HEAD
-* 双指针
-=======
-* 等同于在数组中找一群数，他们的和刚好为sum / 2，转化为背包问题
-* 动态规划，`dp[i][j]`意义为数组前i个数中是否可以挑一些数，使他们的和刚好为j
-* 则`dp[i][j] = dp[i - 1][j] or dp[i - 1][j - nums[i]] or j == nums[i](j > nums[i])`
-* 对应要么取当前数，要么不取当前数，或者刚好目标为当前数
-* TRIKCY
->>>>>>> 4286f57a52d561799cd31071b63c8088e6bedcf0
+
