@@ -208,3 +208,127 @@ class Solution(object):
 ### Tips:
 
 * 快慢指针，两指针相遇时派出第三个指针p，p和慢指针再次相遇的时候，就是循环点
+
+
+
+## 24.两两交换链表中的节点
+
+![24.两两交换链表中的节点](.\images\24.png)
+
+```python
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution(object):
+    def swapPairs(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+
+        if not head or not head.next:
+            return head
+        
+        start = ListNode(-1)
+        start.next = head
+
+        cur = start
+        p = cur.next
+        
+        while cur.next.next:
+            cur.next = p.next
+            p.next = p.next.next
+            cur.next.next = p
+            if p.next:
+                cur = p
+                p = cur.next
+            else:
+                break
+        
+        return start.next
+            
+```
+
+### Tips:
+
+* 使用辅助头部
+* 双指针前进
+* 把图画出来就完了
+
+
+
+## 1002.查找常用字符
+
+![1002.查找常用字符](.\images\1002.png)
+
+```python
+class Solution(object):
+    def commonChars(self, A):
+        """
+        :type A: List[str]
+        :rtype: List[str]
+        """
+
+        record = [0 for _ in range(26)]
+        total_record = [0 for _ in range(26)]
+
+        for i, word in enumerate(A):
+            for c in word:
+                index = ord(c) - ord('a')
+                record[index] += 1
+            if i != 0:
+                for i in range(26):
+                    total_record[i] = min(total_record[i], record[i])
+            else:
+                total_record = record[:]
+            record = [0 for _ in range(26)]
+
+        res = []
+
+        for i in range(26):
+            for freq in range(total_record[i]):
+                res.append(chr(i + ord('a')))
+
+        return res
+```
+
+### TIPs
+
+* 逐单词逐字母统计字母个数
+
+
+
+### 977. 有序数组的平方
+
+![977. 有序数组的平方](.\images\977.png)
+
+```python
+class Solution(object):
+    def sortedSquares(self, A):
+        """
+        :type A: List[int]
+        :rtype: List[int]
+        """
+
+        n = len(A)
+        left = 0 
+        right = n - 1
+        res = []
+
+        while left <= right:
+            if abs(A[left]) >= abs(A[right]):
+                res.append(A[left] ** 2)
+                left += 1
+            else:
+                res.append(A[right] ** 2)
+                right -= 1
+
+        return res[::-1]
+            
+```
+
+### Tips
+
+* 双指针
