@@ -393,3 +393,45 @@ class Solution(object):
 
 
 
+
+
+## 52.N皇后II
+
+![52.N皇后II](.\images\52.png)
+
+```python
+class Solution(object):
+    def totalNQueens(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+
+        self.board = [['.' for _ in range(n)] for _ in range(n)]
+        self.res = 0
+
+        def is_valid(row, column):
+            for i in range(row):
+                for j in range(n):
+                    if (self.board[i][j] == 'Q') and (j == column or (column - row == j - i) or (column + row == i + j)):
+                        return False
+            return True
+
+        def dfs(row):
+            if row == n:
+                self.res += 1
+                return
+            
+            for i in range(n):
+                if is_valid(row, i):
+                    self.board[row][i] = 'Q'
+                    dfs(row + 1)
+                self.board[row][i] = '.'
+
+        dfs(0)
+        return self.res
+```
+
+### Tips
+
+* 同51，带回溯的深度搜索
