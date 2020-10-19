@@ -435,3 +435,66 @@ class Solution(object):
 ### Tips
 
 * 同51，带回溯的深度搜索
+
+
+
+## 844.比较会退格的字符串
+
+![844.比较会退格的字符串](.\images\844.png)
+
+```python
+class Solution(object):
+    def backspaceCompare(self, S, T):
+        """
+        :type S: str
+        :type T: str
+        :rtype: bool
+        """
+
+        n_s = len(S)
+        n_t = len(T)
+
+        p_s = n_s - 1
+        p_t = n_t - 1
+
+        count_s = 0
+        count_t = 0
+
+        while p_s >= 0 or p_t >= 0:
+            while p_s >= 0:
+                if S[p_s] == '#':
+                    count_s += 1
+                    p_s -= 1
+                elif count_s > 0:
+                    p_s -= 1
+                    count_s -= 1
+                else:
+                    # 开始比较
+                    break
+            while p_t >= 0:
+                if T[p_t] == '#':
+                    count_t += 1
+                    p_t -= 1
+                elif count_t > 0:
+                    p_t -= 1
+                    count_t -= 1
+                else:
+                    # 开始比较
+                    break
+            if p_s >= 0 and p_t >= 0:
+                if S[p_s] != T[p_t]:
+                    return False
+            # 若其中一个指针已经到-1,另外一个还在没到，也说明不对
+            elif p_s >= 0 or p_t >= 0:
+                return False
+            
+            p_s -= 1
+            p_t -= 1
+
+        return True
+
+```
+
+### Tips
+
+* 双指针从后往前遍历，逐位比对，注意比较一方指针已到-1 而另外方还在里面的情况
