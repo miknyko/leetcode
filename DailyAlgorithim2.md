@@ -498,3 +498,63 @@ class Solution(object):
 ### Tips
 
 * 双指针从后往前遍历，逐位比对，注意比较一方指针已到-1 而另外方还在里面的情况
+
+
+
+## 763.划分字母区间
+
+![763.划分字母区间](.\images\763.png)
+
+```python
+class Solution(object):
+    def partitionLabels(self, S):
+        """
+        :type S: str
+        :rtype: List[int]
+        """
+        rec = {}
+        for i in range(26):
+            c = chr(ord('a') + i)
+            rec[c] = [float('inf'), float('-inf')]
+
+        # 统计26个字母的首次出现索引和最后一次出现的索引
+        for i, c in enumerate(S):
+            start = rec[c][0]
+            end = rec[c][1]
+
+            if i < start:
+                start = i
+
+            if i > end:
+                end = i
+
+            rec[c] = [start, end]
+	 	# 将此索引列表排序
+        record = list(rec.values())
+        record.sort(key=lambda x :x[0])
+        
+        res = []
+        start = record[0][0]
+        end = record[0][1]
+        record.append([float('inf'), float('-inf')])
+        
+        # 合并重合区间
+        for part in record[1:]:
+
+            if part[0] < end:
+                end = max(end, part[1])
+            
+            else:
+                res.append(end - start + 1)
+                if part[0] == float('inf'):
+                    break
+                else:
+                    start = part[0]
+                    end = part[1]
+            
+        return res
+```
+
+### Tips
+
+* 没啥好说的
