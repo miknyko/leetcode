@@ -558,3 +558,53 @@ class Solution(object):
 ### Tips
 
 * 没啥好说的
+
+
+
+## 1024.视频拼接
+
+![1024.视频拼接](.\images\1024.png)
+
+```python
+class Solution(object):
+    def videoStitching(self, clips, T):
+        """
+        :type clips: List[List[int]]
+        :type T: int
+        :rtype: int
+        """
+
+        # 贪心算法
+        
+        max_distance_from_this = [0 for _ in range(T + 1)]
+
+        # 合并被包含的子区间，记录以每个索引i为左端点的最大子区间右端点
+        for a, b in clips:
+            if a <= T:
+                max_distance_from_this[a] = max(max_distance_from_this[a], b)
+
+        # 遍历每个点
+        res = 0
+        pre_area_end = 0
+        max_reachable_point = 0
+
+        for i in range(T):
+            max_reachable_point = max(max_reachable_point, max_distance_from_this[i])
+
+            if i == max_reachable_point:
+                return -1
+
+            # 当到达当前子区间的右端点时，说明必须去一个新的区间了，结果+1
+            if i == pre_area_end:
+                res += 1
+                pre_area_end = max_reachable_point
+
+        return res
+```
+
+### Tips
+
+* 贪心法，类似跳跃问题
+* 1. 记录每个节点能达到的最远节点，
+  2. 循环所有节点，更新能达到的最大节点
+  3. 如果当循环还没结束的时候，就遇到了极限，说明不能到达终点
