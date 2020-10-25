@@ -608,3 +608,45 @@ class Solution(object):
 * 1. 记录每个节点能达到的最远节点，
   2. 循环所有节点，更新能达到的最大节点
   3. 如果当循环还没结束的时候，就遇到了极限，说明不能到达终点
+
+
+
+
+
+## 845.数组中的最长山脉
+
+![845.数组中的最长山脉](.\images\845.png)
+
+```python
+class Solution(object):
+    def longestMountain(self, A):
+        """
+        :type A: List[int]
+        :rtype: int
+        """
+
+       
+        n = len(A)
+        # left[i] 表示从i点往左能延申多少个位置
+        left = [0 for _ in range(n)]    
+        for i in range(1, n):
+            left[i] = left[i - 1] + 1 if A[i] > A[i - 1] else 0
+
+        # right[i] 表示从i点往右能延申多少个位置
+        right = [0 for _ in range(n)]
+        for i in range(n - 1)[::-1]:
+            right[i] = right[i + 1] + 1 if A[i] > A[i + 1] else 0
+
+
+        longest = 0
+        # 若某个节点能同时向左向右延申，则此点为峰顶
+        for i in range(n):
+            if left[i] > 0 and right[i] > 0:
+                longest = max(longest, left[i] + right[i] + 1)
+
+        return longest
+```
+
+### Tips
+
+* DP，枚举所有有可能出现的山顶
