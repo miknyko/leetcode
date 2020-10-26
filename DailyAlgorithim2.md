@@ -650,3 +650,48 @@ class Solution(object):
 ### Tips
 
 * DP，枚举所有有可能出现的山顶
+
+
+
+## 1365.有多少小于当前数字的数字
+
+![1365.有多少小于当前数字的数字](.\images\1365.png)
+
+```python
+class Solution(object):
+    def smallerNumbersThanCurrent(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+
+        n = len(nums)
+		
+        index_list = [x for x in range(n)]
+		
+        # 将索引数列按照原数组值大小排序
+        index_list.sort(key=lambda x: nums[x])
+
+        res = [0 for _ in range(n)]
+        same = 0
+
+        for count, i in enumerate(index_list):
+            if count == 0:
+                res[i] = 0
+
+            else:
+                if nums[i] == nums[index_list[count - 1]]:
+                    res[i] = res[index_list[count - 1]]
+                    same += 1
+                else:
+                    res[i] = res[index_list[count - 1]] + same + 1
+                    same = 0
+
+        return res
+```
+
+### TIPS
+
+* 建立索引数组，对索引数组进行排序
+* 遍历索引数组，计数
+* 脑壳都绕晕了
