@@ -695,3 +695,41 @@ class Solution(object):
 * 建立索引数组，对索引数组进行排序
 * 遍历索引数组，计数
 * 脑壳都绕晕了
+
+
+
+## 463.岛屿周长
+
+![463.岛屿周长](.\images\463.png)
+
+```python
+class Solution(object):
+    def islandPerimeter(self, grid):
+        """
+        :type grid: List[List[int]]
+        :rtype: int
+        """
+        
+        rows = len(grid)
+        columns = len(grid[0])
+
+        res = 0
+
+        for r in range(rows):
+            for c in range(columns):
+                if grid[r][c] == 1:
+                    count = 4
+                    
+                    for y, x in [(r + 1, c), (r, c + 1), (r - 1, c), (r, c - 1)]:
+                        # 此陆地每多一个相邻的陆地，他对总周长的贡献就少1
+                        if 0 <= x < columns and 0 <= y < rows and grid[y][x] == 1:
+                            count -= 1
+                    res += count
+        
+        return res
+                        
+```
+
+### Tips
+
+* 遍历每一个陆地，此陆地每多一个相邻的陆地，他对总周长的贡献就少1
