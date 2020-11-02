@@ -733,3 +733,43 @@ class Solution(object):
 ### Tips
 
 * 遍历每一个陆地，此陆地每多一个相邻的陆地，他对总周长的贡献就少1
+
+
+
+
+
+## 349.两个数组的交集
+
+![349.两个数组的交集](.\images\349.png)
+
+```python 
+class Solution(object):
+    def intersection(self, nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: List[int]
+        """
+        
+        rec1 = collections.defaultdict(int)
+        rec2 = collections.defaultdict(int)
+
+        for num in nums1:
+            rec1[num] += 1
+        
+        for num in nums2:
+            rec2[num] += 1
+
+        res = []
+
+        for i in rec1.keys():
+            if i in rec2:
+                res.append(i)
+
+        return res
+        
+```
+
+### Tips
+
+* 构建哈希表
