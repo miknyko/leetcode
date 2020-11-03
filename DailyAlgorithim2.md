@@ -773,3 +773,41 @@ class Solution(object):
 ### Tips
 
 * 构建哈希表
+
+
+
+## 941. 有效得山脉数组
+
+![941. 有效得山脉数组](.\images\941.png)
+
+```python
+class Solution(object):
+    def validMountainArray(self, A):
+        """
+        :type A: List[int]
+        :rtype: bool
+        """
+
+        i = 0
+        n = len(A)
+
+        while i < n - 1 and A[i] < A[i + 1]:
+            i += 1
+
+        # 不能是头尾
+        if i == 0 or i == n - 1:
+            return False
+
+        while i < n - 1 and A[i] > A[i + 1]:
+            i += 1
+
+        if i != n - 1:
+            return False
+
+        return True
+```
+
+### Tips
+
+* 线性扫描列表，使用while循环
+* 峰顶不能是头尾
