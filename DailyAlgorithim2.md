@@ -811,3 +811,60 @@ class Solution(object):
 
 * 线性扫描列表，使用while循环
 * 峰顶不能是头尾
+
+
+
+## 57.插入区间
+
+![57.插入区间](.\images\57.png)
+
+```python
+class Solution(object):
+    def insert(self, intervals, newInterval):
+        """
+        :type intervals: List[List[int]]
+        :type newInterval: List[int]
+        :rtype: List[List[int]]
+        """
+        n = len(intervals)
+
+        # 新加区域是否完全超过了此区域
+        def is_after(area1, area2):
+            if area1[0] > area2[1]:
+                return True
+        # 新加区域与该区域是否重合
+        def is_overlayed(area1, area2):
+            if area1[0] > area2[1] or area2[0] > area1[1]:
+                return False
+            else:
+                return True
+        # 合并重合区域
+        def merge(area1, area2):
+            new_area = []
+            new_area.append(min(area1[0], area2[0]))
+            new_area.append(max(area1[1], area2[1]))
+            
+            return new_area
+
+        # 寻找第一个重合区域索引
+        i = 0
+        while i < n and is_after(newInterval, intervals[i]):
+            i += 1
+        
+        # 寻找第一个脱离重合的区域索引
+        j = i
+        temp = newInterval
+        while j < n and is_overlayed(newInterval, intervals[j]):
+            temp = merge(temp, intervals[j])
+            j += 1
+
+        # 切片返回
+        return intervals[:i] + [temp] + intervals[j:]
+
+```
+
+### Tips
+
+* 遍历，寻找第一个重合区域，记录索引i
+* 开始合并，并继续遍历，直到脱离重合
+* 切片返回
