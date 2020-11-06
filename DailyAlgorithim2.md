@@ -868,3 +868,35 @@ class Solution(object):
 * 遍历，寻找第一个重合区域，记录索引i
 * 开始合并，并继续遍历，直到脱离重合
 * 切片返回
+
+
+
+## 1356.根据数字二进制下1的数目排序
+
+![1356.根据数字二进制下1的数目排序](.\images\1356.png)
+
+```python
+class Solution(object):
+    def sortByBits(self, arr):
+        """
+        :type arr: List[int]
+        :rtype: List[int]
+        """
+        result = arr[:]
+
+        def count_one(num):
+            res = 0
+            while num:
+                res += num % 2
+                num = num / 2
+            return res
+        
+        result.sort()
+        result.sort(key=lambda x:count_one(x))
+
+        return result
+```
+
+### Tips:
+
+* 利用python两次排序不会改变第一次排序位置的特性，进行双键排序
