@@ -612,7 +612,7 @@ class Solution(object):
         """
         n = len(nums)
         k_s = n - k
-        # 将nums[left:right + 1]分一次区
+        # 将nums[left:right]分一次区
         def partition(left, right):
             # 随机初始化pivot
             random_index = random.choice(range(left, right + 1))

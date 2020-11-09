@@ -900,3 +900,63 @@ class Solution(object):
 ### Tips:
 
 * 利用python两次排序不会改变第一次排序位置的特性，进行双键排序
+
+
+
+## 973. 最接近远点的K个点
+
+![973. 最接近远点的K个点](.\images\973.png)
+
+```python
+class Solution(object):
+    def kClosest(self, points, K):
+        """
+        :type points: List[List[int]]
+        :type K: int
+        :rtype: List[List[int]]
+        """
+        n = len(points)
+        points_t = points[:]
+
+        def get_distance(point):
+            return point[0] ** 2 + point[1] ** 2
+        
+        # 对points[left, right]根据distance排序
+        def partition(left, right):
+            l = left
+            r = right
+
+            pivot = left
+
+            while l < r:
+                while l < r and get_distance(points_t[r]) > get_distance(points_t[pivot]):
+                    r -= 1
+                while l < r and get_distance(points_t[l]) <= get_distance(points_t[pivot]):
+                    l += 1
+                points_t[l], points_t[r] = points_t[r], points_t[l]
+
+            points_t[left], points_t[l] = points_t[l], points_t[pivot]
+
+            return l
+
+        
+        # 开始二分查找
+        left = 0
+        right = n - 1
+
+        while True:
+            index = partition(left, right)
+            # 一定注意这里的逻辑控制！！！！！！！！！不然一直出错，想清楚！
+            if index == K - 1:
+                return points_t[:K]
+            if index > K - 1:
+                right = index - 1
+            else:
+                left = index + 1
+
+```
+
+### Tips
+
+* 类似数组第k大的元素
+* 进行二分搜索

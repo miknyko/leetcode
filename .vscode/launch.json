@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "stopOnEntry": true,
-            "pythonPath": "d:/miniconda/envs/pytorch/python.exe",
+            "pythonPath": "C:/Users/rockstar/.conda/envs/tf2/python.exe",
             "cwd":""
         }
     ]
