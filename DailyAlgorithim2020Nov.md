@@ -269,3 +269,85 @@ class Solution(object):
 * 两遍 ***从后往前*** 扫描
 * 第一遍找到第一个升序，第二遍找到第一个大于i的j，对换
 * 然后将i之后的数升序排列
+
+
+
+## 514.自由之路
+
+![514.自由之路](C:/Users/42338/leetcode/images/514.png)
+
+```python
+class Solution(object):
+    def findRotateSteps(self, ring, key):
+        """
+        :type ring: str
+        :type key: str
+        :rtype: int
+        """
+        ring_length = len(ring)
+        key_length = len(key)
+
+        # 记录key中每个单词在ring中的所有索引位置
+        position = collections.defaultdict(list)
+        for c in key:
+            for i, w in enumerate(ring):
+                if w == c:
+                    position[c].append(i)
+        
+        dp = [[float('inf') for _ in range(ring_length)] for _ in range(key_length)]
+
+        # 遍历(key的首字母在ring中的所有索引)，初始化第一行
+        for i in position[key[0]]:
+            dp[0][i] = min(i, ring_length - i) + 1
+
+        for i in range(1, key_length):
+            for j in position[key[i]]:
+                # 遍历上一行
+                for k in position[key[i - 1]]:
+                    dp[i][j] = min(dp[i][j], dp[i - 1][k] + min(abs(j - k), ring_length - abs(j - k)) + 1)
+        
+        return min(dp[i])
+```
+
+### Tips
+
+* `dp[i][j]`定义为ring的第J个字母对正的时候，完成了KEY的前I个字母的拼写，所需要的最小步数
+* ![514.自由之路](C:/Users/42338/leetcode/images/514-2.png)
+
+
+
+## 922.按奇偶排序数组II
+
+![922.按奇偶排序数组II](C:/Users/42338/leetcode/images/922.png)
+
+```python
+class Solution(object):
+    def sortArrayByParityII(self, A):
+        """
+        :type A: List[int]
+        :rtype: List[int]
+        """
+
+        def is_odd(number):
+            return number % 2 == 1
+
+        odd_nums = []
+        even_nums = []
+
+        for num in A:
+            if is_odd(num):
+                odd_nums.append(num)
+            else:
+                even_nums.append(num)
+
+        res = []
+        for i in range(len(A) / 2):
+            res.append(even_nums[i])
+            res.append(odd_nums[i])
+
+        return res  
+```
+
+### Tips
+
+* 没什么tips
