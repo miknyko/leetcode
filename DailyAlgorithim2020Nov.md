@@ -1,6 +1,6 @@
 ## 349.两个数组的交集
 
-![349.两个数组的交集](C:/Users/42338/leetcode/images/349.png)
+![349.两个数组的交集](./images/349.png)
 
 ```python 
 class Solution(object):
@@ -38,7 +38,7 @@ class Solution(object):
 
 ## 941. 有效得山脉数组
 
-![941. 有效得山脉数组](C:/Users/42338/leetcode/images/941.png)
+![941. 有效得山脉数组](./images/941.png)
 
 ```python
 class Solution(object):
@@ -76,7 +76,7 @@ class Solution(object):
 
 ## 57.插入区间
 
-![57.插入区间](C:/Users/42338/leetcode/images/57.png)
+![57.插入区间](./images/57.png)
 
 ```python
 class Solution(object):
@@ -133,7 +133,7 @@ class Solution(object):
 
 ## 1356.根据数字二进制下1的数目排序
 
-![1356.根据数字二进制下1的数目排序](C:/Users/42338/leetcode/images/1356.png)
+![1356.根据数字二进制下1的数目排序](./images/1356.png)
 
 ```python
 class Solution(object):
@@ -165,7 +165,7 @@ class Solution(object):
 
 ## 973. 最接近远点的K个点
 
-![973. 最接近远点的K个点](C:/Users/42338/leetcode/images/973.png)
+![973. 最接近远点的K个点](./images/973.png)
 
 ```python
 class Solution(object):
@@ -225,7 +225,7 @@ class Solution(object):
 
 ## 31.下一个排列
 
-![31.下一个排列](C:/Users/42338/leetcode/images/31.png)
+![31.下一个排列](./images/31.png)
 
 ```python
 class Solution(object):
@@ -274,7 +274,7 @@ class Solution(object):
 
 ## 514.自由之路
 
-![514.自由之路](C:/Users/42338/leetcode/images/514.png)
+![514.自由之路](./images/514.png)
 
 ```python
 class Solution(object):
@@ -318,7 +318,7 @@ class Solution(object):
 
 ## 922.按奇偶排序数组II
 
-![922.按奇偶排序数组II](C:/Users/42338/leetcode/images/922.png)
+![922.按奇偶排序数组II](./images/922.png)
 
 ```python
 class Solution(object):
@@ -351,3 +351,43 @@ class Solution(object):
 ### Tips
 
 * 没什么tips
+
+
+
+
+
+## 1122.数组的相对排序
+
+![1122.数组的相对排序](./images/1122.png)
+
+```python
+class Solution(object):
+    def relativeSortArray(self, arr1, arr2):
+        """
+        :type arr1: List[int]
+        :type arr2: List[int]
+        :rtype: List[int]
+        """
+        
+        # 构建哈希表，键为元素值，值为索引
+        rank = {}
+        for i, number in enumerate(arr2):
+            rank[number] = i
+
+        # 构建自定义排序函数
+        # 若两个值都在哈希表中，则根据元组第二个元素，即是他们的索引大小来排序
+        # 若只有其中一个在哈希表，则没在表中的元素更大
+        # 若两个都不在哈希表，则根据他们本身的值来排序
+        def order(number):
+            return (0, rank[number]) if number in rank else (1, number)
+
+        arr1.sort(key=order)
+
+        return arr1
+```
+
+
+
+### Tips
+
+* 自定义排序函数，利用内置`sort()`函数排序
