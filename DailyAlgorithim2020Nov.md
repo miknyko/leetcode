@@ -391,3 +391,143 @@ class Solution(object):
 ### Tips
 
 * 自定义排序函数，利用内置`sort()`函数排序
+
+
+
+## 406. 根据身高重建队列
+
+![406. 根据身高重建队列](./images/406.png)
+
+```python
+class Solution(object):
+    def reconstructQueue(self, people):
+        """
+        :type people: List[List[int]]
+        :rtype: List[List[int]]
+        """
+		# 首先按照身高第一序，以及位置第二序排列
+        people.sort(key=lambda x: (-x[0], x[1]))
+        res = []
+        # 依次将排序的结果插入结果数组中
+        # 可以这么想，后插入的任何元素，随便X什么位置，对于已经插入的元素来说，都是合规合法的
+        # 因为后插入的元素一定比之前的元素小（就算相同的元素，我们也可以认为后来的仍然是小那么一点点）
+        # 所以不会影响他的位置序列
+        # 所以每个元素只要按照他的序列号插入（元组第二个元素），就可以保证他本身的合法性
+        for person in people:
+            res.insert(person[1], person)
+        return res
+```
+
+### Tips
+
+* 有点东西
+
+
+
+## 1030.距离顺序排列矩阵单元格
+
+![1030.距离顺序排列矩阵单元格](./images/1030.png)
+
+```python
+class Solution(object):
+    def allCellsDistOrder(self, R, C, r0, c0):
+        """
+        :type R: int
+        :type C: int
+        :type r0: int
+        :type c0: int
+        :rtype: List[List[int]]
+        """
+
+        directions = [(1, 1), (1, -1), (-1, -1), (-1, 1)]
+        res = [(r0, c0)]
+
+        # 矩阵中有可能的最远曼哈顿距离
+        max_distance = max(r0, R - 1- r0) + max(c0, C - 1 - c0)
+
+        # 起始坐标
+        column = c0
+        row = r0
+        # 按照曼哈顿距离遍历所有点
+        for distance in range(1, max_distance + 1):
+            row -= 1
+            # 从上顶点开始，顺时针遍历相同距离点
+            for i, (dr, dc) in enumerate(directions):
+                # 沿着这条边一直走，一直把这条边走完
+                # 判断条件很关键
+                while (i % 2 == 0 and row != r0) or (i % 2 != 0 and column != c0):
+                    # 如果在矩阵范围内,则添加此点
+                    if 0 <= row < R and 0 <= column < C:
+                        res.append([row, column])
+                    # 继续沿着这条边走
+                    row += dr
+                    column += dc
+        
+        return res
+```
+
+### Tips
+
+* 根据距离来遍历所有点
+
+* 主要注意如何判断“沿着这条边一直走”
+
+* 也可以暴力遍历之后按照距离排序
+
+
+
+
+## 147.对链表进行插入排序
+
+![147.对链表进行插入排序](./images/147.png)
+
+```python
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution(object):
+    def insertionSortList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+
+        if not head:
+            return None
+
+        dummy_head = ListNode(float('-inf'))
+        dummy_head.next = head
+
+        last_sorted = head
+        current = head.next
+
+        while last_sorted.next:
+            if current.val >= last_sorted.val:
+                last_sorted = last_sorted.next
+                current = current.next
+
+            else:
+                # 首先将这个小值节点拿出来
+                last_sorted.next = current.next
+
+                # 然后从头开始遍历，寻找插入点
+                insert = dummy_head
+                while current.val >= insert.next.val:
+                    insert = insert.next
+                current.next = insert.next
+                insert.next = current
+
+                # current继续往后走
+                # last sorted 不动
+                current = last_sorted.next
+
+        return dummy_head.next
+
+```
+
+### Tips
+
+* 每次遇到更小值需要把他插到前面的时候，需要重新从前往后进行遍历，寻找插入位置
