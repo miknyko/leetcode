@@ -531,3 +531,157 @@ class Solution(object):
 ### Tips
 
 * 每次遇到更小值需要把他插到前面的时候，需要重新从前往后进行遍历，寻找插入位置
+
+
+
+
+
+## 222.完全二叉树的节点个数
+
+![222.完全二叉树的节点个数](./images/222.png)
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def countNodes(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+		
+        # 统计树高度
+        def count_level(root):
+            res = 0
+            while root:
+                root = root.left
+                res += 1
+            return res
+
+        def count_node(root):
+            if not root:
+                return 0
+			
+            # 分别统计左右子树高度
+            left_depth = count_level(root.left)
+            right_depth = count_level(root.right)
+            
+            if left_depth == right_depth:
+                # 说明左子树是满树
+                return (1 << left_depth) + count_node(root.right)
+
+            else:
+                # left_depth > right_depth
+                # 说明右子树是满树
+                return (1 << right_depth) + count_node(root.left)
+
+        return count_node(root) 
+```
+
+### Tips
+
+* 利用完全树的特点，可以不用遍历所有节点
+* 复杂度O（logn * logn）
+
+
+
+## 1370. 上升下降字符串
+
+![1370. 上升下降字符串](./images/1370.png)
+
+```python
+class Solution(object):
+    def sortString(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+
+        record = [0 for _ in range(26)]
+
+        for c in s:
+            record[ord(c) - ord('a')] += 1
+
+        res = ''
+        while len(res) < len(s):
+            for i in range(26):
+                if record[i]:
+                    res += chr(i + ord('a'))
+                    record[i] -= 1
+
+            for i in range(26)[::-1]:
+                if record[i]:
+                    res += chr(i + ord('a'))
+                    record[i] -= 1
+
+        return res
+
+```
+
+### Tips
+
+* 使用哈希表记录每个字母个数
+* 按照字母顺序不断采集哈希表中值非零的元素
+
+
+
+## 164. 最大间距
+
+![164. 最大间距](./images/164.png)
+
+```python
+class Solution(object):
+    def maximumGap(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+
+        n = len(nums)
+        if n < 2:
+            return 0
+
+        maximum = max(nums)
+        minimum = min(nums)
+		# 按照平均差值等分整个值域
+        average_gap = max(1, (maximum - minimum) / (n - 1))
+        # +1 保证最大值也能被分配一个桶
+        nums_buckets = (maximum - minimum) / average_gap + 1
+
+
+        # 每个桶存放落在此区间的最大值和最小值
+        buckets = [[-1, -1] for _ in range(nums_buckets)]
+
+        for i, num in enumerate(nums):
+            # 查找这个数属于哪个桶
+            idx = (num - minimum) // average_gap
+            if buckets[idx][0] == -1:
+                buckets[idx][0] = num
+                buckets[idx][1] = num
+            else:
+                buckets[idx][0] = min(num, buckets[idx][0])
+                buckets[idx][1] = max(num, buckets[idx][1])
+
+        res = 0
+        prev = -1
+        for i in range(nums_buckets):
+            if buckets[i][0] == -1:
+                # 当前桶没有元素
+                # 继续往后找
+                continue
+            else:
+                # 记录这个桶的最小值，和前一个非空桶的最大值之差
+                res = max(buckets[i][0] - buckets[prev][1], res)
+                prev = i
+
+        return res
+```
+
+### Tips
+
+* 利用桶排序，在线性时间内完成
