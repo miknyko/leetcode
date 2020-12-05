@@ -685,3 +685,175 @@ class Solution(object):
 ### Tips
 
 * 利用桶排序，在线性时间内完成
+
+
+
+## 767.重构字符串
+
+![767.重构字符串](./images/767.png)
+
+```python
+class Solution(object):
+    def reorganizeString(self, S):
+        """
+        :type S: str
+        :rtype: str
+        """
+
+        n = len(S)
+
+        record = collections.defaultdict(int)
+
+        for c in S:
+            record[c] += 1
+        
+        # 通过数学判断是否一定有相邻
+        for count in record.values():
+            if count > (n + 1) // 2:
+                return ""
+
+        count_list = record.items()
+        count_list.sort(key=lambda x : -x[1])
+
+
+        result = ['' for _ in range(n)]
+        i = 0
+        # 按照字母统计数量，从高到低
+        # 先插奇数位，再插偶数位
+        for letter, count in count_list:
+            for _ in range(count):
+                result[i] = letter
+                i += 2
+
+                if i >= n:
+                    i = 1
+        
+        return "".join(result)
+```
+
+### tips
+
+* 先使用数学方法判断时候能生成不相邻的字符串
+* 然后按照字母数量，从高到低，先放奇数位，再放偶数位
+
+
+
+
+
+## 976.三角形的最大周长
+
+![976.三角形的最大周长](./images/976.png)
+
+```python
+class Solution(object):
+    def largestPerimeter(self, A):
+        """
+        :type A: List[int]
+        :rtype: int
+        """
+        
+        def isvalid(edge1, edge2, edge3):
+            if edge1 + edge2 <= edge3:
+                return False
+
+            if edge2 + edge3 <= edge1:
+                return False
+
+            if edge1 + edge3 <= edge2:
+                return False
+
+            return True
+
+        if len(A) < 3:
+            return 0
+
+        n = len(A)
+
+        A.sort()
+
+        i = n - 1
+        j = n - 2
+        k = n - 3
+
+        while not isvalid(A[i], A[j], A[k]):
+            if k - 1 < 0:
+                return 0
+            i = j
+            j = k
+            k = k - 1
+
+        return A[i] + A[j] +A[k]
+```
+
+### Tips
+
+* 讲所有的边从大到小排列，并遍历
+* 先根据几何知识判断是否能形成三角形，贪心搜索
+
+
+
+## 493.翻转对
+
+![493.翻转对](./images/493.png)
+
+```python
+class Solution(object):
+    def merge(self, left, right):     
+        result = []
+        i = 0
+        j = 0
+
+        while i < len(left) and j < len(right):
+            if left[i] <= right[j]:
+                result.append(left[i])
+                i += 1
+
+            else:
+                result.append(right[j])
+                j += 1
+
+        result += left[i:]
+        result += right[j:]
+
+        return result
+
+    def merge_sort(self, nums):
+        if len(nums) <= 1:
+            return nums
+
+        mid = len(nums) // 2
+
+        left_sorted = self.merge_sort(nums[:mid])
+        right_sorted = self.merge_sort(nums[mid:])
+
+        left_length = len(left_sorted)
+        right_length = len(right_sorted)
+        
+        j = 0
+        # 利用有序数组的大小顺序
+        # 快速计算左右端点分别位于两个数组的翻转对
+        # 固定左端点i
+        for i in range(left_length):
+            # 右端点j逐个增加，直到无法满足条件
+            while j < right_length and left_sorted[i] > 2 * right_sorted[j]:
+                j += 1
+            self.count += j
+                
+        return self.merge(left_sorted, right_sorted)
+    
+    def reversePairs(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        self.count = 0
+
+        sorted_nums = self.merge_sort(nums)
+        
+        return self.count
+```
+
+### Tips
+
+* 归并排序的副产物
+* 在两个有序数列合并之前，进行计数操作

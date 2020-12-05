@@ -278,6 +278,7 @@ class Solution(object):
                 left = mid + 1
             elif nums[mid] > target:
                 right = mid - 1
+        # 循环终止时 left = right + 1 ，正好是第一个target的位置
         
         if left > n - 1 or nums[left] != target:
             return [-1, -1]
@@ -298,6 +299,8 @@ class Solution(object):
                 left = mid + 1
             elif nums[mid] > target:
                 right = mid - 1
+        
+        # 循环终止时 right = left - 1 ，正好是最后一个target的位置
 
         if right < 0 or nums[right] != target:
             return [-1, -1]
