@@ -134,3 +134,34 @@ class Solution(object):
 * 贪心解法，有点讲究
 * 维护某个数字的出现次数的哈希表，维护以某个数字为结尾的序列的个数
 * 遍历所有的数字，动态更新
+
+
+
+
+
+## 621.任务调度器
+
+![621.任务调度器](./images/621.png)
+
+```python
+class Solution:
+    def leastInterval(self, tasks: List[str], n: int) -> int:
+        # 统计任务个数
+        record = collections.Counter(tasks)
+
+        # 计算出现次数最多的元素的次数
+        # 也就是“有几行”
+        max_count = max(record.values())
+
+        # 也要计算出现最多次数的元素一共有几种
+        max_value_count = sum([1 if count == max_count else 0 for count in record.values()])
+
+        # 要么有空值
+        # 要么全部排满
+        return max((max_count - 1) * (n + 1) + max_value_count, len(tasks))
+```
+
+### Tips
+
+* 想象把所有任务排成一个矩阵
+* ![621-1.任务调度器](./images/621-1.png)
